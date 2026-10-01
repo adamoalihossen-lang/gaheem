@@ -1,0 +1,277 @@
+if _G.GaheemScript then
+    _G.GaheemScript:Destroy()
+end
+
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "GaheemSystem"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
+_G.GaheemScript = ScreenGui
+
+local OpenButton = Instance.new("TextButton")
+OpenButton.Size = UDim2.new(0, 65, 0, 50)
+OpenButton.Position = UDim2.new(0, 50, 0, 150)
+OpenButton.BackgroundColor3 = Color3.fromRGB(0, 102, 204)
+OpenButton.BorderColor3 = Color3.fromRGB(255, 255, 255)
+OpenButton.BorderSizePixel = 2
+OpenButton.Text = "XR7"
+OpenButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+OpenButton.TextSize = 20
+OpenButton.Font = Enum.Font.SourceSansBold
+OpenButton.Active = true
+OpenButton.Draggable = true
+OpenButton.Parent = ScreenGui
+
+local OpenBtnCorner = Instance.new("UICorner")
+OpenBtnCorner.CornerRadius = UDim.new(0, 10)
+OpenBtnCorner.Parent = OpenButton
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 540, 0, 480)
+MainFrame.Position = UDim2.new(0.5, -270, 0.5, -240)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 30, 80)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Visible = false
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
+
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Size = UDim2.new(1, 0, 0, 35)
+TitleLabel.Position = UDim2.new(0, 0, 0, 5)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "GAHEEM~XR7"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.TextSize = 18
+TitleLabel.Font = Enum.Font.SourceSansBold
+TitleLabel.Parent = MainFrame
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 35, 0, 35)
+CloseBtn.Position = UDim2.new(1, -40, 0, 5)
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 0, 0)
+CloseBtn.TextSize = 18
+CloseBtn.Font = Enum.Font.SourceSansBold
+CloseBtn.Parent = MainFrame
+
+local TextBox = Instance.new("TextBox")
+TextBox.Size = UDim2.new(0.65, 0, 0, 40)
+TextBox.Position = UDim2.new(0.075, 0, 0, 45)
+TextBox.BackgroundColor3 = Color3.fromRGB(25, 50, 120)
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.PlaceholderText = "اكتب اسم اللاعب لتسجيله..."
+TextBox.Text = ""
+TextBox.TextSize = 15
+TextBox.Font = Enum.Font.SourceSans
+TextBox.Parent = MainFrame
+
+local BoxCorner = Instance.new("UICorner")
+BoxCorner.CornerRadius = UDim.new(0, 8)
+BoxCorner.Parent = TextBox
+
+local AddBtn = Instance.new("TextButton")
+AddBtn.Size = UDim2.new(0.18, 0, 0, 40)
+AddBtn.Position = UDim2.new(0.745, 0, 0, 45)
+AddBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+AddBtn.BorderColor3 = Color3.fromRGB(255, 255, 255)
+AddBtn.BorderSizePixel = 1
+AddBtn.Text = "تسجيل"
+AddBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+AddBtn.TextSize = 15
+AddBtn.Font = Enum.Font.SourceSansBold
+AddBtn.Parent = MainFrame
+
+local AddCorner = Instance.new("UICorner")
+AddCorner.CornerRadius = UDim.new(0, 8)
+AddCorner.Parent = AddBtn
+
+local ScrollingFrame = Instance.new("ScrollingFrame")
+ScrollingFrame.Size = UDim2.new(0.85, 0, 0, 310)
+ScrollingFrame.Position = UDim2.new(0.075, 0, 0, 95)
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(10, 20, 50)
+ScrollingFrame.BorderSizePixel = 0
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollingFrame.Parent = MainFrame
+
+local ScrollCorner = Instance.new("UICorner")
+ScrollCorner.CornerRadius = UDim.new(0, 8)
+ScrollCorner.Parent = ScrollingFrame
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 5)
+UIListLayout.Parent = ScrollingFrame
+
+local BottomLabel = Instance.new("TextLabel")
+BottomLabel.Size = UDim2.new(1, 0, 0, 30)
+BottomLabel.Position = UDim2.new(0, 0, 1, -35)
+BottomLabel.BackgroundTransparency = 1
+BottomLabel.Text = "جحيم فحلك"
+BottomLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+BottomLabel.TextSize = 15
+BottomLabel.Font = Enum.Font.SourceSansBold
+BottomLabel.Parent = MainFrame
+
+local savedPlayers = {}
+local currentIndex = 1
+
+local function updateSavedList()
+    for _, child in ipairs(ScrollingFrame:GetChildren()) do
+        if child:IsA("Frame") then
+            child:Destroy()
+        end
+    end
+    
+    local totalHeight = 0
+    
+    for userId, data in pairs(savedPlayers) do
+        local ItemFrame = Instance.new("Frame")
+        ItemFrame.Size = UDim2.new(1, -10, 0, 85)
+        ItemFrame.BackgroundColor3 = Color3.fromRGB(20, 35, 75)
+        ItemFrame.Parent = ScrollingFrame
+        
+        local ItemCorner = Instance.new("UICorner")
+        ItemCorner.CornerRadius = UDim.new(0, 6)
+        ItemCorner.Parent = ItemFrame
+        
+        local AvatarImg = Instance.new("ImageLabel")
+        AvatarImg.Size = UDim2.new(0, 65, 0, 65)
+        AvatarImg.Position = UDim2.new(0.02, 0, 0.1, 0)
+        AvatarImg.BackgroundTransparency = 1
+        AvatarImg.Image = data.avatar or ""
+        AvatarImg.Parent = ItemFrame
+        
+        local StatsLabel = Instance.new("TextLabel")
+        StatsLabel.Size = UDim2.new(0.60, 0, 0.9, 0)
+        StatsLabel.Position = UDim2.new(0.26, 0, 0.05, 0)
+        StatsLabel.BackgroundTransparency = 1
+        StatsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        StatsLabel.TextSize = 12
+        StatsLabel.Font = Enum.Font.SourceSansBold
+        StatsLabel.TextXAlignment = Enum.TextXAlignment.Right
+        StatsLabel.TextYAlignment = Enum.TextYAlignment.Center
+        StatsLabel.TextWrapped = true
+        
+        local durationSecs = os.time() - data.regTime
+        local hours = math.floor(durationSecs / 3600)
+        local mins = math.floor((durationSecs % 3600) / 60)
+        local secs = durationSecs % 60
+        local timeFormatted = string.format("%02d:%02d:%02d", hours, mins, secs)
+        
+        StatsLabel.Text = "الاسم: " .. data.displayName .. " (@" .. data.name .. ")\n" ..
+                          "وقت التسجيل: " .. timeFormatted .. "\n" ..
+                          "مرات الخروج: " .. (data.leaves or 0) .. " | مرات الدخول: " .. (data.joins or 0)
+        StatsLabel.Parent = ItemFrame
+        
+        local DeleteBtn = Instance.new("TextButton")
+        DeleteBtn.Size = UDim2.new(0, 35, 0, 35)
+        DeleteBtn.Position = UDim2.new(0.88, 0, 0.3, 0)
+        DeleteBtn.BackgroundColor3 = Color3.fromRGB(180, 20, 20)
+        DeleteBtn.Text = "X"
+        DeleteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        DeleteBtn.TextSize = 16
+        DeleteBtn.Font = Enum.Font.SourceSansBold
+        DeleteBtn.Parent = ItemFrame
+        
+        local DelCorner = Instance.new("UICorner")
+        DelCorner.CornerRadius = UDim.new(0, 6)
+        DelCorner.Parent = DeleteBtn
+        
+        DeleteBtn.MouseButton1Click:Connect(function()
+            savedPlayers[userId] = nil
+            updateSavedList()
+        end)
+        
+        totalHeight = totalHeight + 90
+    end
+    
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+end
+
+AddBtn.MouseButton1Click:Connect(function()
+    local allPlayers = {}
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer then
+            table.insert(allPlayers, p)
+        end
+    end
+    
+    if #allPlayers == 0 then return end
+    
+    if currentIndex > #allPlayers then
+        currentIndex = 1
+    end
+    
+    local foundPlayer = allPlayers[currentIndex]
+    currentIndex = currentIndex + 1
+    
+    if foundPlayer then
+        if not savedPlayers[foundPlayer.UserId] then
+            savedPlayers[foundPlayer.UserId] = {
+                name = foundPlayer.Name,
+                displayName = foundPlayer.DisplayName,
+                regTime = os.time(),
+                leaves = 0,
+                joins = 0,
+                avatar = ""
+            }
+            
+            task.spawn(function()
+                local success, content = pcall(function()
+                    return Players:GetUserThumbnailAsync(foundPlayer.UserId, Enum.ThumbnailType.AvatarBust, Enum.ThumbnailSize.Size420x420)
+                end)
+                if success and savedPlayers[foundPlayer.UserId] then
+                    savedPlayers[foundPlayer.UserId].avatar = content
+                    updateSavedList()
+                end
+            end)
+        end
+        TextBox.Text = foundPlayer.DisplayName
+        updateSavedList()
+    end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    if savedPlayers[player.UserId] then
+        savedPlayers[player.UserId].leaves = (savedPlayers[player.UserId].leaves or 0) + 1
+        updateSavedList()
+    end
+end)
+
+Players.PlayerAdded:Connect(function(player)
+    if savedPlayers[player.UserId] then
+        savedPlayers[player.UserId].joins = (savedPlayers[player.UserId].joins or 0) + 1
+        updateSavedList()
+    end
+end)
+
+OpenButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+    if MainFrame.Visible then
+        updateSavedList()
+    end
+end)
+
+CloseBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+end)
+
+task.spawn(function()
+    while true do
+        task.wait(1)
+        if MainFrame.Visible then
+            updateSavedList()
+        end
+    end
+end)
